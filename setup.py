@@ -8,17 +8,14 @@ with open("README.md", "r") as f:
 # EDIT ================================================================================================================
 # EDIT ================================================================================================================
 # EDIT ================================================================================================================
-NAME = "alerts_msg"
+NAME = "singleton_meta"
 
 setup(
   version="0.0.1",
-  description="All abilities to send alert msgs",
-  keywords=["smtp", "mail", "email", "alerts", "notifications", "email alerts"],
+  description="create perfect singletons meta",
+  keywords=["singleton"],
   classifiers=[
-    "Framework :: AsyncIO",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Communications",
-    "Topic :: Communications :: Email",
 
     # EDIT ============================================================================================================
     # EDIT ============================================================================================================
