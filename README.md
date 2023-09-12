@@ -3,7 +3,7 @@
 
 ## Features
 
-1. perfect singleton
+1. perfect singleton (maybe thread safe!)
 
 
 ## License
@@ -33,11 +33,24 @@ from singleton_meta import *
 
 See tests and source for other examples.
 
-### 
 
-#### 1. 
+### 1. Use simple nesting (common)
 
 ```python
-from alerts_msg import *
+from singleton_meta import *
 
+class MySingleton(Singleton):
+    pass
+
+class MySingleton2(Singleton):
+    pass
+```
+
+### 2. Use meta
+
+```python
+from singleton_meta import *
+
+class MySingleton(metaclass=SingletonMeta):
+    pass
 ```
