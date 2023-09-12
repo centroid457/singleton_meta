@@ -54,3 +54,17 @@ from singleton_meta import *
 class MySingleton(metaclass=SingletonMeta):
     pass
 ```
+
+### 3. NOTICE: all your Singletons must be only last classes!
+
+don't use nesting from any Your Singletons!
+
+```python
+from singleton_meta import *
+
+class MySingleton(Singleton):   # OK
+    pass
+
+class MySingleton2(MySingleton):    # WRONG
+    pass
+```

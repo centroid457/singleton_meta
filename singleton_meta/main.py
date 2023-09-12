@@ -1,3 +1,7 @@
+"""
+NOTICE: all your Singletons must be only last classes! dont use nesting from any Your Singletons!
+"""
+
 from threading import Lock
 
 
