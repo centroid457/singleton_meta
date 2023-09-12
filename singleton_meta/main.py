@@ -1,7 +1,7 @@
 from threading import Lock
 
 
-class _SingletonMeta(type):
+class SingletonMeta(type):
     """
     metaclass which create the singleton logic.
     USE ONLY LIKE
@@ -21,7 +21,7 @@ class _SingletonMeta(type):
         return cls.__INSTANCE
 
 
-class Singleton(metaclass=_SingletonMeta):
+class Singleton(metaclass=SingletonMeta):
     """
     usable class for typical nesting like
         class MySingleton(Singleton):
