@@ -10,7 +10,7 @@ class SingletonMetaClass(type):
     USAGE only like:
         class MySingleton(metaclass=_SingletonMeta):
             pass
-    but prefer using next class Singleton!
+    but prefer using SingletonWMetaCall!
 
     :param MUTEX: mutex for safe creating items
     """
@@ -76,9 +76,6 @@ class SingletonWoMetaNew:
         cls.MUTEX.acquire()
         if not hasattr(cls, "__INSTANCE"):
             setattr(cls, "__INSTANCE", None)
-            cls.__INSTANCE = None
-
-        if cls.__INSTANCE is None:
             cls.__INSTANCE = super().__new__(cls)
 
         if SingletonWoMetaNew in cls.__mro__:
