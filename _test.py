@@ -17,16 +17,17 @@ def test__nesting_direct_correct():
     class Victim2(Singleton):
         attr = 2
 
+    assert Singleton._SINGLETONS == []
+
     assert Victim1().attr == 1
     Victim1().attr = 11
     assert Victim1().attr == 11
+    assert Singleton._SINGLETONS == [Victim1(), ]
 
     assert Victim2().attr == 2
     Victim2().attr = 22
     assert Victim2().attr == 22
-
     assert Victim1().attr == 11
-
     assert Singleton._SINGLETONS == [Victim1(), Victim2()]
 
 

@@ -1,12 +1,12 @@
 Release History
 ===============
 
-_SINGLETONS
+0.0.2 (2023-10-02)
+-------------------
+**NEW**
+- add _SINGLETONS collection
 
 0.0.1 (2023-09-12)
 -------------------
-
 **NEW**
 - first creation
-
-
