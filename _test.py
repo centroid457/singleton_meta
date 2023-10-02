@@ -108,22 +108,44 @@ def test__threading_spawn():
         thread.join()
         assert thread.is_alive() is False
 
-def test__nesting_INCORRECT():
-    class Victim(SingletonWMetaCall):
+def test__several_levels_at_ones__low():
+    VictimBase = SingletonWMetaCall
+    class VictimBase2(VictimBase):
+        attr = 0
+    class Victim1(VictimBase2):
         attr = 1
-    class Victim2(Victim):
+    class Victim2(VictimBase2):
         attr = 2
 
-    assert Victim().attr == 1
-    Victim().attr = 11
-    assert Victim().attr == 11
+    assert VictimBase2().attr == 0
+    try:
+        assert Victim1().attr == 1
+    except Exx_SingletonNestingLevels:
+        pass
+    else:
+        assert False
 
-    # TRY USE SECOND LEVEL NESTING - ALL WRONG! dont use several levels!!!
-    assert Victim2().attr == 11  # UNEXPECTED!
 
-    class Victim2(Victim, metaclass=SingletonMetaClass):
-        attr = 22
-    assert Victim2().attr == 11  # UNEXPECTED!
+def test__several_levels_at_ones__up():
+    VictimBase = SingletonWMetaCall
+
+    class VictimBase2(VictimBase):
+        attr = 0
+
+    class Victim1(VictimBase2):
+        attr = 1
+
+    class Victim2(VictimBase2):
+        attr = 2
+
+    assert Victim1().attr == 1
+    assert Victim2().attr == 2
+    try:
+        assert VictimBase2().attr == 0
+    except Exx_SingletonNestingLevels:
+        pass
+    else:
+        assert False
 
 
 # =====================================================================================================================

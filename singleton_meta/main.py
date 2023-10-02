@@ -3,6 +3,30 @@ from threading import Lock
 
 
 # =====================================================================================================================
+class Exx_SingletonNestingLevels(Exception):
+    """Exception when used several unsuitable levels in nesting!
+
+    EXAMPLE:
+        VictimBase = SingletonWMetaCall
+        setattr(VictimBase, "attr", 0)
+        class Victim1(VictimBase):
+            attr = 1
+
+        assert VictimBase().attr == 0
+        try:
+            assert Victim1().attr == 1
+        except Exx_SingletonDifferentNestingLevels:
+            pass
+        else:
+            assert False
+
+    MAIN RULES:
+    1. always instantiate only last Classes in your tree project!
+    """
+    pass
+
+
+# =====================================================================================================================
 class SingletonMetaClass(type):
     """
     metaclass which create the singletons.
@@ -15,14 +39,34 @@ class SingletonMetaClass(type):
     :param _mutex_Singleton: mutex for safe creating items
     """
     _mutex_Singleton: Lock = Lock()    # keep this special name! (need uniq! in case of exists in source!)
+    CLS_INST_BLOCKED: Set[Any] = set()
+    CLS_INST_USED: Set[Any] = set()
 
     def __call__(cls, *args, **kwargs):
+        # check blocked --------------------------------------------
+        if cls in SingletonMetaClass.CLS_INST_BLOCKED:
+            msg = f"{cls.__name__=} WAS BLOCKED before by creating singleton in upper nesting level"
+            for cls_blocked in SingletonMetaClass.CLS_INST_BLOCKED:
+                msg += f"\n\t{cls_blocked.__name__=}"
+            raise Exx_SingletonNestingLevels(msg)
+
+        SingletonMetaClass.CLS_INST_USED.add(cls)
+
+        for cls_mro in cls.__mro__[1:]:
+            if cls_mro in SingletonMetaClass.CLS_INST_USED:
+                msg = f"{cls.__name__=} WAS USED before by creating singleton in less nesting level"
+                for cls_used in SingletonMetaClass.CLS_INST_USED:
+                    msg += f"\n\t{cls_used.__name__=}"
+                raise Exx_SingletonNestingLevels(msg)
+            SingletonMetaClass.CLS_INST_BLOCKED.add(cls_mro)
+
+        # create singleton -----------------------------------------
         cls._mutex_Singleton.acquire()
         if not hasattr(cls, '__INSTANCE'):
             setattr(cls, '__INSTANCE', None)
             cls.__INSTANCE = super().__call__(*args, **kwargs)
 
-            # collect from all classes
+            # collect from all classes -----------------------------------------
             if SingletonWMetaCall in cls.__mro__:
                 if cls.__INSTANCE not in SingletonWMetaCall._SINGLETONS:
                     SingletonWMetaCall._SINGLETONS.append(cls.__INSTANCE)
@@ -42,6 +86,7 @@ class SingletonWMetaCall(metaclass=SingletonMetaClass):
 
     :param _SINGLETONS: collection of created singletons instances
         when you create several classes, you maybe need to keep access to all of them.
+        Used in tests!
 
     USAGE
     -----
@@ -56,7 +101,16 @@ class SingletonWMetaCall(metaclass=SingletonMetaClass):
     """
     _SINGLETONS: List['SingletonWMetaCall'] = []
 
-    # TODO: need clear instance??? maybe for tests?
+    # @classmethod
+    # def _instance_del(cls) -> None:
+    #     """Delete class instance!
+    #
+    #     expected using for tests!
+    #     """
+    #     try:
+    #         delattr(cls, "__INSTANCE")
+    #     except:
+    #         pass
 
 
 class SingletonWoMetaNew:
