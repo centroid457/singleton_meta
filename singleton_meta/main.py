@@ -3,7 +3,7 @@ from threading import Lock
 
 
 # =====================================================================================================================
-class SingletonMeta(type):
+class SingletonMetaClass(type):
     """
     metaclass which create the singletons.
 
@@ -14,7 +14,6 @@ class SingletonMeta(type):
 
     :param MUTEX: mutex for safe creating items
     """
-
     MUTEX: Lock = Lock()
 
     def __call__(cls, *args, **kwargs):
@@ -24,8 +23,9 @@ class SingletonMeta(type):
             cls.__INSTANCE = super().__call__(*args, **kwargs)
 
             # collect from all classes
-            if Singleton in cls.__mro__:
-                Singleton._SINGLETONS.append(cls.__INSTANCE)
+            if SingletonWMetaCall in cls.__mro__:
+                if cls.__INSTANCE not in SingletonWMetaCall._SINGLETONS:
+                    SingletonWMetaCall._SINGLETONS.append(cls.__INSTANCE)
 
             # singleton_group_class = cls.__mro__[1]
             # if not hasattr(singleton_group_class, '_INSTANCES'):
@@ -37,7 +37,7 @@ class SingletonMeta(type):
         return cls.__INSTANCE
 
 
-class Singleton(metaclass=SingletonMeta):
+class SingletonWMetaCall(metaclass=SingletonMetaClass):
     """Singleton manager
 
     :param _SINGLETONS: collection of created singletons instances
@@ -54,9 +54,39 @@ class Singleton(metaclass=SingletonMeta):
         class VictimINCORRECT(Victim1):
             pass
     """
-    _SINGLETONS: List['Singleton'] = []
+    _SINGLETONS: List['SingletonWMetaCall'] = []
 
     # TODO: need clear instance??? maybe for tests?
+
+
+class SingletonWoMetaNew:
+    """else one variant after SingletonWMetaCall.
+
+    USEFUL CASES:
+    1. you need to use some metaclass (cant set two metaclasses).
+    2. always reinit instance on instantiating! (would be called __init__(*args/kwargs)!
+        if blank init - will be the same as SingletonWMetaCall
+
+    params see in SingletonWMetaCall
+    """
+    _SINGLETONS: List['SingletonWoMetaNew'] = []
+    MUTEX: Lock = Lock()
+
+    def __new__(cls, *args, **kwargs):
+        cls.MUTEX.acquire()
+        if not hasattr(cls, "__INSTANCE"):
+            setattr(cls, "__INSTANCE", None)
+            cls.__INSTANCE = None
+
+        if cls.__INSTANCE is None:
+            cls.__INSTANCE = super().__new__(cls)
+
+        if SingletonWoMetaNew in cls.__mro__:
+            if cls.__INSTANCE not in SingletonWoMetaNew._SINGLETONS:
+                SingletonWoMetaNew._SINGLETONS.append(cls.__INSTANCE)
+
+        cls.MUTEX.release()
+        return cls.__INSTANCE
 
 
 # =====================================================================================================================
