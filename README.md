@@ -29,49 +29,61 @@ from singleton_meta import *
 See tests and source for other examples.
 
 ### 1. Use simple nesting (common)
+
 ```python
 from singleton_meta import *
 
-class MySingleton(Singleton):
+
+class MySingleton(SingletonWMetaCall):
     pass
 
-class MySingleton2(Singleton):
+
+class MySingleton2(SingletonWMetaCall):
     pass
 ```
 
 ### 2. access to created instances
+
 ```python
 from singleton_meta import *
 
-    class Victim1(Singleton):
-        attr = 1
 
-    class Victim2(Singleton):
-        attr = 2
+class Victim1(SingletonWMetaCall):
+    attr = 1
 
-    assert Singleton._SINGLETONS == []
-    Victim1()
-    assert Singleton._SINGLETONS == [Victim1(), ]
-    Victim2()
-    assert Singleton._SINGLETONS == [Victim1(), Victim2(), ]
+
+class Victim2(SingletonWMetaCall):
+    attr = 2
+
+
+assert SingletonWMetaCall._SINGLETONS == []
+Victim1()
+assert SingletonWMetaCall._SINGLETONS == [Victim1(), ]
+Victim2()
+assert SingletonWMetaCall._SINGLETONS == [Victim1(), Victim2(), ]
 ```
 
 ### 3. Use meta
+
 ```python
 from singleton_meta import *
 
-class MySingleton(metaclass=SingletonMeta):
+
+class MySingleton(metaclass=SingletonMetaClass):
     pass
 ```
 
 ### 4. NOTICE: all your Singletons must be only last classes!
 don't use nesting from any Your Singletons!
+
 ```python
 from singleton_meta import *
 
-class MySingleton(Singleton):   # OK
+
+class MySingleton(SingletonWMetaCall):  # OK
     pass
 
-class MySingleton2(MySingleton):    # WRONG
+
+class MySingleton2(MySingleton):  # WRONG
     pass
 ```
