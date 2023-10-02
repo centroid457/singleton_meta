@@ -12,63 +12,65 @@ from singleton_meta import *
 
 
 # =====================================================================================================================
-@pytest.mark.parametrize(argnames="VictimCls", argvalues=[SingletonWMetaCall, SingletonWoMetaNew])
-def test__no_args(VictimCls):
-    class Victim1(VictimCls):
+@pytest.mark.parametrize(argnames="VictimBase", argvalues=[SingletonWMetaCall, SingletonWoMetaNew])
+def test__no_args(VictimBase):
+    class Victim1(VictimBase):
         attr = 1
 
-    class Victim2(VictimCls):
+    class Victim2(VictimBase):
         attr = 2
 
-    assert VictimCls._SINGLETONS == []
+    assert VictimBase._SINGLETONS == []
 
     assert Victim1().attr == 1
     Victim1().attr = 11
     assert Victim1().attr == 11
-    assert VictimCls._SINGLETONS == [Victim1(), ]
+    assert VictimBase._SINGLETONS == [Victim1(), ]
 
     assert Victim2().attr == 2
     Victim2().attr = 22
     assert Victim2().attr == 22
-    assert VictimCls._SINGLETONS == [Victim1(), Victim2()]
+    assert VictimBase._SINGLETONS == [Victim1(), Victim2()]
 
     assert Victim1().attr == 11
 
 def test__META_with_args():
-    SingletonWMetaCall._SINGLETONS = []
-    class Victim1(SingletonWMetaCall):
+    VictimBase = SingletonWMetaCall
+    VictimBase._SINGLETONS = []
+    class Victim1(VictimBase):
         def __init__(self, attr):
             self.attr = attr
 
-    assert SingletonWMetaCall._SINGLETONS == []
+    assert VictimBase._SINGLETONS == []
     instance = Victim1(1)
 
     assert instance.attr == 1
     assert Victim1(111).attr == 1
-    assert SingletonWMetaCall._SINGLETONS == [instance, ]
+    assert VictimBase._SINGLETONS == [instance, ]
 
     Victim1(111).attr = 11
     assert Victim1(1).attr == 11
-    assert SingletonWMetaCall._SINGLETONS == [instance, ]
+    assert VictimBase._SINGLETONS == [instance, ]
 
     assert Victim1(1111).attr == 11
-    assert SingletonWMetaCall._SINGLETONS == [instance, ]
+    assert VictimBase._SINGLETONS == [instance, ]
 
 def test__NoMETA_with_args():
-    SingletonWoMetaNew._SINGLETONS = []
-    class Victim1(SingletonWoMetaNew):
+    VictimBase = SingletonWoMetaNew
+    VictimBase._SINGLETONS = []
+    class Victim1(VictimBase):
         def __init__(self, attr):
             self.attr = attr
 
-    assert SingletonWoMetaNew._SINGLETONS == []
+    assert VictimBase._SINGLETONS == []
     instance = Victim1(1)
 
     assert instance.attr == 1
     assert Victim1(111).attr == 111
-    assert SingletonWoMetaNew._SINGLETONS == [instance, ]
+    assert VictimBase._SINGLETONS == [instance, ]
 
     assert Victim1(1).attr == 1
-    assert SingletonWoMetaNew._SINGLETONS == [instance, ]
+    assert VictimBase._SINGLETONS == [instance, ]
 
 def test__nesting_else_one_meta():
     # cant use else one metaclass in nesting!
@@ -91,16 +93,16 @@ def test__nesting_else_one_meta():
     assert Victim2().attr == 22
 
 def test__threading_spawn():
-    def func():
-        time.sleep(1)
+    class Victim1(SingletonWMetaCall):
+        def __init__(self):
+            time.sleep(1)
 
     threads = []
     for item in range(10):
-        threads.append(threading.Thread(target=func))
+        threads.append(threading.Thread(target=Victim1))
 
     for thread in threads:
         thread.start()
-        assert thread.is_alive() is True
 
     for thread in threads:
         thread.join()

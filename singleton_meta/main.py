@@ -14,10 +14,10 @@ class SingletonMetaClass(type):
 
     :param MUTEX: mutex for safe creating items
     """
-    MUTEX: Lock = Lock()
+    # MUTEX: Lock = Lock()
 
     def __call__(cls, *args, **kwargs):
-        cls.MUTEX.acquire()
+        # cls.MUTEX.acquire()
         if not hasattr(cls, '__INSTANCE'):
             setattr(cls, '__INSTANCE', None)
             cls.__INSTANCE = super().__call__(*args, **kwargs)
@@ -33,7 +33,7 @@ class SingletonMetaClass(type):
             #     singleton_group_class._INSTANCES = []
             # singleton_group_class._INSTANCES.append(cls.__INSTANCE)
 
-        cls.MUTEX.release()
+        # cls.MUTEX.release()
         return cls.__INSTANCE
 
 
@@ -70,10 +70,10 @@ class SingletonWoMetaNew:
     params see in SingletonWMetaCall
     """
     _SINGLETONS: List['SingletonWoMetaNew'] = []
-    MUTEX: Lock = Lock()
+    # MUTEX: Lock = Lock()
 
     def __new__(cls, *args, **kwargs):
-        cls.MUTEX.acquire()
+        # cls.MUTEX.acquire()
         if not hasattr(cls, "__INSTANCE"):
             setattr(cls, "__INSTANCE", None)
             cls.__INSTANCE = super().__new__(cls)
@@ -82,7 +82,7 @@ class SingletonWoMetaNew:
             if cls.__INSTANCE not in SingletonWoMetaNew._SINGLETONS:
                 SingletonWoMetaNew._SINGLETONS.append(cls.__INSTANCE)
 
-        cls.MUTEX.release()
+        # cls.MUTEX.release()
         return cls.__INSTANCE
 
 
