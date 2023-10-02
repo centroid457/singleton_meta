@@ -5,11 +5,12 @@ from threading import Lock
 # =====================================================================================================================
 class SingletonMeta(type):
     """
-    metaclass which create the singleton logic.
-    USE ONLY LIKE
+    metaclass which create the singletons.
+
+    USAGE only like:
         class MySingleton(metaclass=_SingletonMeta):
             pass
-    but prefer use next class Singleton!
+    but prefer using next class Singleton!
 
     :param MUTEX: mutex for safe creating items
     """
@@ -31,10 +32,7 @@ class SingletonMeta(type):
 
 
 class Singleton(metaclass=SingletonMeta):
-    """
-    usable class for typical nesting like
-        class MySingleton(Singleton):
-            pass
+    """Singleton manager
 
     :param _SINGLETONS: collection of created singletons instances
         when you create several classes, you maybe need to keep access to all of them.
@@ -51,6 +49,8 @@ class Singleton(metaclass=SingletonMeta):
             pass
     """
     _SINGLETONS: List['Singleton'] = []
+
+    # TODO: need clear instance??? maybe for tests?
 
 
 # =====================================================================================================================
