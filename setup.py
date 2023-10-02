@@ -11,7 +11,7 @@ with open("README.md", "r") as f:
 NAME = "singleton_meta"
 
 setup(
-  version="0.0.4",
+  version="0.0.5",
   description="create perfect singletons meta",
   keywords=["singleton"],
   classifiers=[
