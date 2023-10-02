@@ -4,7 +4,7 @@ Release History
 0.0.4 (2023-10-02)
 -------------------
 **CHANGES**
-- Clear mutex! not needed!
+- fix mutex
 
 0.0.3 (2023-10-02)
 -------------------
