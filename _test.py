@@ -1,5 +1,6 @@
 import os
 import pytest
+import time
 import pathlib
 import shutil
 from tempfile import TemporaryDirectory
@@ -89,6 +90,21 @@ def test__nesting_else_one_meta():
     Victim2().attr = 22
     assert Victim2().attr == 22
 
+def test__threading_spawn():
+    def func():
+        time.sleep(1)
+
+    threads = []
+    for item in range(10):
+        threads.append(threading.Thread(target=func))
+
+    for thread in threads:
+        thread.start()
+        assert thread.is_alive() is True
+
+    for thread in threads:
+        thread.join()
+        assert thread.is_alive() is False
 
 def test__nesting_INCORRECT():
     class Victim(SingletonWMetaCall):
