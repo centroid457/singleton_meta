@@ -27,6 +27,12 @@ class SingletonMeta(type):
             if Singleton in cls.__mro__:
                 Singleton._SINGLETONS.append(cls.__INSTANCE)
 
+            # singleton_group_class = cls.__mro__[1]
+            # if not hasattr(singleton_group_class, '_INSTANCES'):
+            #     setattr(singleton_group_class, '_INSTANCES', [])
+            #     singleton_group_class._INSTANCES = []
+            # singleton_group_class._INSTANCES.append(cls.__INSTANCE)
+
         cls.MUTEX.release()
         return cls.__INSTANCE
 
