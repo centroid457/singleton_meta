@@ -12,7 +12,7 @@ NAME = "singleton_meta"
 
 setup(
   version="0.0.5",
-  description="create perfect singletons meta",
+  description="create perfect singletons",
   keywords=["singleton"],
   classifiers=[
     "Topic :: Software Development :: Libraries :: Python Modules",
