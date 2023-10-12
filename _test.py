@@ -35,6 +35,7 @@ def test__no_args(Victim):
 
     assert Victim1().attr == 11
 
+
 def test__META_with_args():
     VictimBase = SingletonByCallMeta
     VictimBase._drop_all()
@@ -56,6 +57,7 @@ def test__META_with_args():
     assert Victim1(1111).attr == 11
     assert VictimBase._SINGLETONS == [instance, ]
 
+
 def test__NoMETA_with_args():
     Victim = SingletonByNew
     Victim._drop_all()
@@ -72,6 +74,7 @@ def test__NoMETA_with_args():
 
     assert Victim1(1).attr == 1
     assert Victim._SINGLETONS == [instance, ]
+
 
 def test__META_nesting_else_one_meta():
     # cant use else one metaclass in nesting!

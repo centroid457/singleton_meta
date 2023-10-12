@@ -1,7 +1,13 @@
 Release History
 ===============
 
-RENAMES!
+0.1.0 (2023-10-12)
+-------------------
+**CHANGES**
+- add docs
+- RENAMES!
+- separate SingletonManagerBase
+- full ideticall schemes in both meta/noMeta classes
 
 0.0.5 (2023-10-03)
 -------------------
