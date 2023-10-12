@@ -91,6 +91,10 @@ class SingletonManagerBase:
 
     @classmethod
     def instance__check_created_and_enshure_it(cls, cls_obj: Any) -> bool:
+        """check if instance not created yet and create it
+
+        :returns: result of checking was it exists or not
+        """
         result = hasattr(cls_obj, '__INSTANCE')
         if not result:
             setattr(cls_obj, '__INSTANCE', None)
@@ -99,6 +103,8 @@ class SingletonManagerBase:
     @classmethod
     def instance__collect(cls, cls_obj: Any) -> None:
         """collect all singleton objects from all classes
+
+        dont know why but it is not working! both in meta and noMeta
         """
         if cls_obj.__INSTANCE not in cls_obj._SINGLETONS:
             cls_obj._SINGLETONS.append(cls_obj.__INSTANCE)
@@ -117,13 +123,12 @@ class SingletonManagerBase:
 
 # =====================================================================================================================
 class SingletonMetaCallClass(SingletonManagerBase, type):
-    """metaclass which create the singletons.
+    """metaclass which create the singletons by Call method
 
     USAGE
     -----
         class MySingleton(metaclass=_SingletonMeta):
             pass
-    but prefer using SingletonWMetaCall!
     """
     def __call__(cls, *args, **kwargs):
         cls._check_correct_instantiating_singletons(cls)     # dont place into mutex!
@@ -152,7 +157,8 @@ class SingletonMetaCallClass(SingletonManagerBase, type):
 
 
 class SingletonByCallMeta(metaclass=SingletonMetaCallClass):
-    """Singleton manager, creating them by using CALL with metaclassing
+    """same as original metaclass SingletonMetaCallClass but just an another variant of using it by simple nesting
+    (without direct using metaclass parameter).
 
     USAGE
     -----
@@ -169,17 +175,14 @@ class SingletonByCallMeta(metaclass=SingletonMetaCallClass):
 
 # =====================================================================================================================
 class SingletonByNew(SingletonManagerBase):
-    """Singleton manager, creating them by using NEW without metaclassing
+    """Singleton manager, creating them by using NEW method without metaclassing
     else one variant after SingletonWMetaCall, in case of metaclass is not acceptable.
 
     USEFUL CASES:
     1. you need to use some metaclass (cant set two metaclasses).
-    2. always reinit instance on instantiating! (would be called __init__(*args/kwargs)!
+    2. (main difference) always reinit instance on instantiating! (would be called __init__(*args/kwargs)!
         if blank init - will be the same as SingletonWMetaCall
-
-    attributes see in SingletonWMetaCall
     """
-
     def __new__(cls, *args, **kwargs):
         cls._check_correct_instantiating_singletons(cls)     # dont place into mutex!
 
@@ -188,8 +191,11 @@ class SingletonByNew(SingletonManagerBase):
         if not cls.instance__check_created_and_enshure_it(cls):
             cls.__INSTANCE = super().__new__(cls)
 
+        # ------------------------
+        # cls.instance__collect(cls)    # here it is not working!
         if cls.__INSTANCE not in cls._SINGLETONS:
             cls._SINGLETONS.append(cls.__INSTANCE)
+        # ------------------------
 
         cls._MUTEX_SINGLETON.release()
         # -----------------------------------------
