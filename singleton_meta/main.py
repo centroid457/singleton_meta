@@ -27,50 +27,58 @@ class Exx_SingletonNestingLevels(Exception):
 
 
 # =====================================================================================================================
+# TODO: separate BASE!!! use
+class SingletonBase:
+    """Base (manager) for classes to create singletons.
 
-
-# =====================================================================================================================
-class SingletonMetaClass(type):
-    """metaclass which create the singletons.
-
-    USAGE only like:
-        class MySingleton(metaclass=_SingletonMeta):
-            pass
-    but prefer using SingletonWMetaCall!
+    GOALS:
+    1. threading mutex
+    2. prevent and raise incorrect singleton usage
 
     :ivar _mutex_Singleton: mutex for safe creating items
     :ivar _CLS_INST_BLOCKED: set of classes which can NOT be used as singleton! for correct singletons reason!
         if we instantiate one class and then instantiate one of other class nesting this one -
         before you did not understand your architecture mistake, but now it will rase!
-        So it prevent and raise incorrect singleton usage
     :ivar _CLS_INST_USED: set of classes which already used as singleton!
     """
     _mutex_Singleton: Lock = Lock()  # keep this special name! dont use just MUTEX! (need uniq! in case of exists in source!)
     _CLS_INST_BLOCKED: Set[Any] = set()
     _CLS_INST_USED: Set[Any] = set()
 
-    def __call__(cls, *args, **kwargs):
+    @classmethod
+    def _mro_check_blocked(cls, cls_obj: Any) -> Optional[NoReturn]:
         # check blocked --------------------------------------------
-        if cls in SingletonMetaClass._CLS_INST_BLOCKED:
-            msg = f"{cls.__name__=} WAS BLOCKED before by creating singleton in upper nesting level"
-            for cls_blocked in SingletonMetaClass._CLS_INST_BLOCKED:
+        if cls_obj in SingletonBase._CLS_INST_BLOCKED:
+            msg = f"{cls_obj.__name__=} WAS BLOCKED before by creating singleton in upper nesting level"
+            for cls_blocked in SingletonBase._CLS_INST_BLOCKED:
                 msg += f"\n\t{cls_blocked.__name__=}"
             raise Exx_SingletonNestingLevels(msg)
 
-        SingletonMetaClass._CLS_INST_USED.add(cls)
+        SingletonBase._CLS_INST_USED.add(cls_obj)
 
-        for cls_mro in cls.__mro__[1:]:
-            if cls_mro in SingletonMetaClass._CLS_INST_USED:
-                msg = f"{cls.__name__=} WAS USED before by creating singleton in less nesting level"
-                for cls_used in SingletonMetaClass._CLS_INST_USED:
+        for cls_mro in cls_obj.__mro__[1:]:
+            if cls_mro in SingletonBase._CLS_INST_USED:
+                msg = f"{cls_obj.__name__=} WAS USED before by creating singleton in less nesting level"
+                for cls_used in SingletonBase._CLS_INST_USED:
                     msg += f"\n\t{cls_used.__name__=}"
                 raise Exx_SingletonNestingLevels(msg)
-            SingletonMetaClass._CLS_INST_BLOCKED.add(cls_mro)
+            SingletonBase._CLS_INST_BLOCKED.add(cls_mro)
+
+
+# =====================================================================================================================
+class SingletonMetaClass(SingletonBase, type):
+    """metaclass which create the singletons.
+
+    USAGE only like:
+        class MySingleton(metaclass=_SingletonMeta):
+            pass
+    but prefer using SingletonWMetaCall!
+    """
+    def __call__(cls, *args, **kwargs):
+        cls._mro_check_blocked(cls)     # dont place into mutex!
 
         # create singleton -----------------------------------------
         cls._mutex_Singleton.acquire()
-
-        cls._mro_check_blocked()
 
         if not hasattr(cls, '__INSTANCE'):
             setattr(cls, '__INSTANCE', None)
@@ -89,10 +97,6 @@ class SingletonMetaClass(type):
 
         cls._mutex_Singleton.release()
         return cls.__INSTANCE
-
-    @classmethod
-    def _mro_check_blocked(cls) -> Optional[NoReturn]:
-        pass
 
 
 class SingletonWMetaCall(metaclass=SingletonMetaClass):
