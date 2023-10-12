@@ -37,6 +37,7 @@ class SingletonManagerBase:
     :ivar _SINGLETONS: collection of created singletons instances.
         when you create several classes, you maybe need to keep access to all of them.
         Used in tests!
+        Dont access via instance! recommended using via classname!
     :ivar _MUTEX_SINGLETON: mutex for safe creating items
     :ivar _CLS_BLOCKED: set of classes which can NOT be used as singleton! for correct singletons reason!
         if we instantiate one class and then instantiate one of other class nesting this one -
