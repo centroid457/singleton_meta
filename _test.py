@@ -20,6 +20,7 @@ def test__no_args(VictimBase):
     class Victim2(VictimBase):
         attr = 2
 
+    VictimBase._drop_all()
     assert VictimBase._SINGLETONS == []
 
     assert Victim1().attr == 1

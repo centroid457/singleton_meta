@@ -78,6 +78,18 @@ class SingletonManagerBase:
             cls._CLS_BLOCKED.add(cls_mro)
 
     @classmethod
+    def _drop_all(cls) -> None:
+        """delete all singletons!
+
+        created just for correct testing
+        """
+        while cls._SINGLETONS:
+            try:
+                delattr(cls._SINGLETONS.pop(), "__INSTANCE")
+            except:
+                pass
+
+    @classmethod
     def instance__check_created_and_enshure_it(cls, cls_obj: Any) -> bool:
         result = hasattr(cls_obj, '__INSTANCE')
         if not result:
@@ -116,7 +128,7 @@ class SingletonMetaCallClass(SingletonManagerBase, type):
     def __call__(cls, *args, **kwargs):
         cls._check_correct_instantiating_singletons(cls)     # dont place into mutex!
 
-        # create singleton -----------------------------------------
+        # -----------------------------------------
         cls._MUTEX_SINGLETON.acquire()
 
         if not cls.instance__check_created_and_enshure_it(cls):
@@ -135,6 +147,7 @@ class SingletonMetaCallClass(SingletonManagerBase, type):
         # ------------------------
 
         cls._MUTEX_SINGLETON.release()
+        # -----------------------------------------
         return cls.__INSTANCE
 
 
@@ -155,7 +168,7 @@ class SingletonByCallMeta(metaclass=SingletonMetaCallClass):
 
 
 # =====================================================================================================================
-class SingletonByNew:
+class SingletonByNew(SingletonManagerBase):
     """Singleton manager, creating them by using NEW without metaclassing
     else one variant after SingletonWMetaCall, in case of metaclass is not acceptable.
 
@@ -166,19 +179,20 @@ class SingletonByNew:
 
     attributes see in SingletonWMetaCall
     """
-    _SINGLETONS: List['SingletonByNew'] = []
-    _mutex_Singleton: Lock = Lock()
 
     def __new__(cls, *args, **kwargs):
-        cls._mutex_Singleton.acquire()
-        if not hasattr(cls, "__INSTANCE"):
-            setattr(cls, "__INSTANCE", None)
+        cls._check_correct_instantiating_singletons(cls)     # dont place into mutex!
+
+        # -----------------------------------------
+        cls._MUTEX_SINGLETON.acquire()
+        if not cls.instance__check_created_and_enshure_it(cls):
             cls.__INSTANCE = super().__new__(cls)
 
         if cls.__INSTANCE not in cls._SINGLETONS:
             cls._SINGLETONS.append(cls.__INSTANCE)
 
-        cls._mutex_Singleton.release()
+        cls._MUTEX_SINGLETON.release()
+        # -----------------------------------------
         return cls.__INSTANCE
 
 
