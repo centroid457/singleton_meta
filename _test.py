@@ -27,35 +27,49 @@ def test__no_args(Victim):
     Victim1().attr = 11
     assert Victim1().attr == 11
     assert Victim._SINGLETONS == [Victim1(), ]
+    assert Victim1._SINGLETONS == [Victim1(), ]
+    try:
+        assert Victim1()._SINGLETONS == [Victim1(), ]
+    except:
+        assert Victim == SingletonByCallMeta
+    else:
+        assert Victim == SingletonByNew
 
     assert Victim2().attr == 2
     Victim2().attr = 22
     assert Victim2().attr == 22
     assert Victim._SINGLETONS == [Victim1(), Victim2()]
+    assert Victim2._SINGLETONS == [Victim1(), Victim2()]
+    try:
+        assert Victim2()._SINGLETONS == [Victim1(), Victim2()]
+    except:
+        assert Victim == SingletonByCallMeta
+    else:
+        assert Victim == SingletonByNew
 
     assert Victim1().attr == 11
 
 
 def test__META_with_args():
-    VictimBase = SingletonByCallMeta
-    VictimBase._drop_all()
-    class Victim1(VictimBase):
+    Victim = SingletonByCallMeta
+    Victim._drop_all()
+    class Victim1(Victim):
         def __init__(self, attr):
             self.attr = attr
 
-    assert VictimBase._SINGLETONS == []
+    assert Victim._SINGLETONS == []
     instance = Victim1(1)
 
     assert instance.attr == 1
     assert Victim1(111).attr == 1
-    assert VictimBase._SINGLETONS == [instance, ]
+    assert Victim._SINGLETONS == [instance, ]
 
     Victim1(111).attr = 11
     assert Victim1(1).attr == 11
-    assert VictimBase._SINGLETONS == [instance, ]
+    assert Victim._SINGLETONS == [instance, ]
 
     assert Victim1(1111).attr == 11
-    assert VictimBase._SINGLETONS == [instance, ]
+    assert Victim._SINGLETONS == [instance, ]
 
 
 def test__NoMETA_with_args():
