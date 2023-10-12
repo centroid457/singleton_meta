@@ -1,6 +1,8 @@
 Release History
 ===============
 
+RENAMES!
+
 0.0.5 (2023-10-03)
 -------------------
 **NEW**
@@ -14,10 +16,10 @@ Release History
 0.0.3 (2023-10-02)
 -------------------
 **NEW**
-- SingletonWoMetaNew
+- SingletonByNew
 
 **RENAMES**
-- Singleton -> SingletonWMetaCall
+- Singleton -> SingletonByCallMeta
 
 0.0.2 (2023-10-02)
 -------------------

@@ -34,11 +34,11 @@ See tests and source for other examples.
 from singleton_meta import *
 
 
-class MySingleton(SingletonWMetaCall):
+class MySingleton(SingletonByCallMeta):
     pass
 
 
-class MySingleton2(SingletonWMetaCall):
+class MySingleton2(SingletonByCallMeta):
     pass
 ```
 
@@ -48,19 +48,19 @@ class MySingleton2(SingletonWMetaCall):
 from singleton_meta import *
 
 
-class Victim1(SingletonWMetaCall):
+class Victim1(SingletonByCallMeta):
     attr = 1
 
 
-class Victim2(SingletonWMetaCall):
+class Victim2(SingletonByCallMeta):
     attr = 2
 
 
-assert SingletonWMetaCall._SINGLETONS == []
+assert SingletonByCallMeta._SINGLETONS == []
 Victim1()
-assert SingletonWMetaCall._SINGLETONS == [Victim1(), ]
+assert SingletonByCallMeta._SINGLETONS == [Victim1(), ]
 Victim2()
-assert SingletonWMetaCall._SINGLETONS == [Victim1(), Victim2(), ]
+assert SingletonByCallMeta._SINGLETONS == [Victim1(), Victim2(), ]
 ```
 
 ### 3. Use meta
@@ -69,7 +69,7 @@ assert SingletonWMetaCall._SINGLETONS == [Victim1(), Victim2(), ]
 from singleton_meta import *
 
 
-class MySingleton(metaclass=SingletonMetaClass):
+class MySingleton(metaclass=SingletonMetaCallClass):
     pass
 ```
 
@@ -80,7 +80,7 @@ don't use nesting from any Your Singletons!
 from singleton_meta import *
 
 
-class MySingleton(SingletonWMetaCall):  # OK
+class MySingleton(SingletonByCallMeta):  # OK
     pass
 
 

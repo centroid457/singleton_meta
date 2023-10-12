@@ -12,7 +12,7 @@ from singleton_meta import *
 
 
 # =====================================================================================================================
-@pytest.mark.parametrize(argnames="VictimBase", argvalues=[SingletonWMetaCall, SingletonWoMetaNew])
+@pytest.mark.parametrize(argnames="VictimBase", argvalues=[SingletonByCallMeta, SingletonByNew])
 def test__no_args(VictimBase):
     class Victim1(VictimBase):
         attr = 1
@@ -35,7 +35,7 @@ def test__no_args(VictimBase):
     assert Victim1().attr == 11
 
 def test__META_with_args():
-    VictimBase = SingletonWMetaCall
+    VictimBase = SingletonByCallMeta
     VictimBase._SINGLETONS = []
     class Victim1(VictimBase):
         def __init__(self, attr):
@@ -56,7 +56,7 @@ def test__META_with_args():
     assert VictimBase._SINGLETONS == [instance, ]
 
 def test__NoMETA_with_args():
-    VictimBase = SingletonWoMetaNew
+    VictimBase = SingletonByNew
     VictimBase._SINGLETONS = []
     class Victim1(VictimBase):
         def __init__(self, attr):
@@ -75,7 +75,7 @@ def test__NoMETA_with_args():
 def test__nesting_else_one_meta():
     # cant use else one metaclass in nesting!
     try:
-        class Victim1(SingletonWMetaCall, abc.ABC):
+        class Victim1(SingletonByCallMeta, abc.ABC):
             attr = 1
     except TypeError:
         msg = """
@@ -86,14 +86,14 @@ def test__nesting_else_one_meta():
     else:
         assert False
 
-    class Victim2(SingletonWoMetaNew, abc.ABC):
+    class Victim2(SingletonByNew, abc.ABC):
         attr = 2
     assert Victim2().attr == 2
     Victim2().attr = 22
     assert Victim2().attr == 22
 
 def test__threading_spawn():
-    class Victim1(SingletonWMetaCall):
+    class Victim1(SingletonByCallMeta):
         def __init__(self):
             time.sleep(1)
 
@@ -109,7 +109,7 @@ def test__threading_spawn():
         assert thread.is_alive() is False
 
 def test__several_levels_at_ones__low():
-    VictimBase = SingletonWMetaCall
+    VictimBase = SingletonByCallMeta
     class VictimBase2(VictimBase):
         attr = 0
     class Victim1(VictimBase2):
@@ -127,7 +127,7 @@ def test__several_levels_at_ones__low():
 
 
 def test__several_levels_at_ones__up():
-    VictimBase = SingletonWMetaCall
+    VictimBase = SingletonByCallMeta
 
     class VictimBase2(VictimBase):
         attr = 0
