@@ -29,7 +29,7 @@ class PROJECT:
 
     # add DOUBLE SPACE at the end of all lines! for correct representation in MD-viewers
     DESCRIPTION_LONG: str = """
-designed for ...
+designed for singletons creation
     """
     FEATURES: List[str] = [
         # "feat1",
