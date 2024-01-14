@@ -7,10 +7,17 @@ from requirements_checker import Packages
 # =====================================================================================================================
 pkgs_cli = Packages()
 
+print()
+print("1=pip========================================")
 pkgs_cli.upgrade_pip()
-pkgs_cli.upgrade__centroid457()
+print()
+print("2=find_packages========================================")
 pkgs_cli.upgrade(find_packages())
-
+print()
+print("3=upgrade__centroid457========================================")
+pkgs_cli.upgrade__centroid457()
+print()
+print("4=requirements.txt========================================")
 filepath = pathlib.Path(__file__).parent.joinpath("requirements.txt")   # FIXME: not working!
 pkgs_cli.upgrade_file(filepath)
 
