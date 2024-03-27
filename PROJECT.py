@@ -50,7 +50,8 @@ designed for singletons creation
         "..."
     ]
     NEWS: List[str] = [
-        "[pypi] apply last"
+        "[pypi] apply last",
+
     ]
 
     # FINALIZE -----------------------------------------------
