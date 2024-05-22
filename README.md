@@ -1,4 +1,4 @@
-# singleton_meta (v0.1.2)
+# singleton_meta (v0.1.3)
 
 ## DESCRIPTION_SHORT
 create perfect singletons

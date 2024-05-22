@@ -42,7 +42,7 @@ designed for singletons creation
     ]
 
     # HISTORY -----------------------------------------------
-    VERSION: Tuple[int, int, int] = (0, 1, 2)
+    VERSION: Tuple[int, int, int] = (0, 1, 3)
     TODO: List[str] = [
         "..."
     ]
@@ -50,8 +50,8 @@ designed for singletons creation
         "..."
     ]
     NEWS: List[str] = [
-        "[pypi] apply last",
-
+        "[__INIT__.py] fix import",
+        "apply last pypi template",
     ]
 
     # FINALIZE -----------------------------------------------
