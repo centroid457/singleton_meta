@@ -36,13 +36,10 @@ designed for singletons creation
         # "feat1",
         # ["feat2", "block1", "block2"],
 
-        "perfect singleton (maybe thread safe!)",
-        "collect all instances",
-        "check correct instantiating singletons in tree project",
     ]
 
     # HISTORY -----------------------------------------------
-    VERSION: Tuple[int, int, int] = (0, 1, 3)
+    VERSION: Tuple[int, int, int] = (0, 2, 0)
     TODO: List[str] = [
         "..."
     ]

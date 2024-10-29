@@ -17,19 +17,6 @@
 #     # EXX
 # )
 # ---------------------------------------------------------------------------------------------------------------------
-from .main import (
-    # BASE
-    SingletonManagerBase,
-    SingletonMetaCallClass,
-    SingletonByCallMeta,
-    SingletonByNew,
 
-    # AUX
-
-    # TYPES
-
-    # EXX
-    Exx_SingletonNestingLevels,
-)
 
 # =====================================================================================================================
