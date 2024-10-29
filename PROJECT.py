@@ -47,8 +47,7 @@ designed for singletons creation
         "..."
     ]
     NEWS: List[str] = [
-        "[__INIT__.py] fix import",
-        "apply last pypi template",
+        "[base_aux] move all there",
     ]
 
     # FINALIZE -----------------------------------------------
